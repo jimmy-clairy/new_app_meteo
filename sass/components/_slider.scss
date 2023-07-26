@@ -1,0 +1,58 @@
+.slider {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80%;
+    max-width: 32rem;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: $main-color;
+    border-radius: 0 20px 20px 0;
+    padding: 3rem;
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.73, 0.11, 0.67, 0.84);
+    .min-max {
+      margin-top: 1rem;
+    }
+}
+.slider.active {
+    transform: translateX(0);
+}
+
+.slider-btn {
+    position: relative;
+    z-index: 10;
+    height: 3rem;
+    width: 3rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+  }
+  .slider-btn .line {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 0.2rem;
+    background: #fff;
+    transition: transform 0.3s ease-out, opacity 0.1s ease-out;
+  }
+  .slider-btn .l1 {
+    transform: translateY(-0.8rem);
+  }
+  .slider-btn .l3 {
+    transform: translateY(0.8rem);
+  }
+  .slider-btn.active .l1 {
+    transform: translateY(0) rotate(135deg);
+  }
+  .slider-btn.active .l2 {
+    opacity: 0;
+  }
+  .slider-btn.active .l3 {
+    transform: translateY(0) rotate(-135deg);
+  }

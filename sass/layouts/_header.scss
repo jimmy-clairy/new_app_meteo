@@ -1,0 +1,56 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    max-width: 80rem;
+}
+.header-top {
+    position: relative;
+    min-height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-bot {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .temp {
+        font-size: 6rem;
+    }
+    .description {
+        margin: 1rem 0 3rem;
+        text-transform: capitalize;
+    }
+
+    .min-max{
+        margin-top: 1rem;
+        font-size: 1.2rem;
+    }
+
+    &__icon {
+        position: relative;
+        width: 6.4rem;
+        height: 6.4rem;
+        &-weather {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 300%;
+        }
+    }
+}
+
+.cityName {
+    font-size: 2rem;
+    padding-right: .5rem;
+}
+
+.hidden {
+    opacity: 0;
+}

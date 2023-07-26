@@ -1,6 +1,6 @@
+@import "utils/variables";
 @import "bases/reset";
 @import "bases/general";
-
-h1 {
-    color: lightgreen;
-}
+@import "components/slider";
+@import "components/form";
+@import "layouts/header";

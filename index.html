@@ -13,8 +13,60 @@
 
 <body>
     <header class="header">
-        <h1 class="header__heading">Beginning</h1>
+        <div class="header-top">
+
+            <div class="city hidden">
+                <span class="cityName"></span>
+                <img class="lacation-dot" src="./assets/icon/location-dot.svg" width="15" height="15"
+                    alt="icon location dot">
+            </div>
+
+            <button class="slider-btn" aria-label="toggle curtain navigation">
+                <span class="line l1"></span>
+                <span class="line l2"></span>
+                <span class="line l3"></span>
+            </button>
+        </div>
+
+        <div class="header-bot">
+            <div class="header-bot__content">
+                <div class="temp"></div>
+                <div class="description active"></div>
+                <div class="city">
+                    <span class="cityName"></span><img class="lacation-dot" src="./assets/icon/location-dot.svg"
+                        width="15" height="15" alt="icon location dot">
+                </div>
+
+                <div class="min-max">
+                    <span class="temp-min"></span> /
+                    <span class="temp-max"></span>
+                    Ressenti <span class="feel"></span>
+                </div>
+            </div>
+            <div class="header-bot__icon">
+                <img class="header-bot__icon-weather" src="./assets/iconMeteo/01d.svg" alt="icon meteo">
+            </div>
+        </div>
     </header>
+
+    <div class="slider">
+        <div class="city">
+            <span class="cityName"></span><img class="lacation-dot" src="./assets/icon/location-dot.svg" width="15"
+                height="15" alt="icon location dot">
+        </div>
+        <div class="min-max">
+            <span class="temp-min"></span> /
+            <span class="temp-max"></span>
+            Ressenti <span class="feel"></span>
+        </div>
+        <form id="form" action="">
+            <div class="container-input">
+                <input placeholder="Entrez une ville" type="text" name="setCity" id="setCity" required>
+                <button>Ok</button>
+            </div>
+            <p class="error-info">Ville non trouvée</p>
+        </form>
+    </div>
 
 </body>
 
