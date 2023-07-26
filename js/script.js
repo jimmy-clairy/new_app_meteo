@@ -29,7 +29,7 @@ async function getWeatherData(city) {
         // console.log("Coordinates" + cityName, lat, lon);
 
         const dataWeather = await getFetchData(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${keyAPI}&units=metric&lang=fr`)
-        // console.log(dataWeather);
+        console.log(dataWeather);
         const weather5day = await getFetchData(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${keyAPI}&units=metric&lang=fr`)
         // console.log(weather5day);
 
@@ -93,6 +93,27 @@ function addElements(data) {
 
     const iconWeather = document.querySelector('.header-bot__icon-weather')
     iconWeather.src = `assets/iconMeteo/${data.icon}.svg`
+
+    const humidity = document.querySelector('.humidity')
+    humidity.textContent = `${data.humidity}%`
+
+    const wind = document.querySelector('.wind')
+    wind.textContent = `${data.wind} km/h`
+
+    const sunset = document.querySelector('.sunset')
+    sunset.textContent = getLocaleTime(data.sunset)
+    const sunrise = document.querySelector('.sunrise')
+    sunrise.textContent = getLocaleTime(data.sunrise)
+
+}
+
+function getLocaleTime(timePerSecond) {
+    const date = new Date(timePerSecond * 1000);
+    const time = date.toLocaleTimeString();
+    const timeSplit = time.split(':')
+    timeSplit.pop()
+    const newTime = timeSplit.join(':')
+    return newTime
 }
 
 // Slider
