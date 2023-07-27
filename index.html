@@ -49,27 +49,34 @@
         </div>
     </header>
 
+    <!------- SLIDER ------->
     <div class="slider">
-        <div class="city">
-            <span class="cityName"></span><img class="lacation-dot" src="./assets/icon/location-dot.svg" width="15"
-                height="15" alt="icon location dot">
-        </div>
-        <div class="min-max">
-            <span class="temp-min"></span> /
-            <span class="temp-max"></span>
-            Ressenti <span class="feel"></span>
-        </div>
-        <form id="form" action="">
-            <div class="container-input">
-                <input placeholder="Entrez une ville" type="text" name="setCity" id="setCity" required>
-                <button>Ok</button>
+        <div class="slider__top">
+            <div class="city">
+                <span class="cityName"></span><img class="lacation-dot" src="./assets/icon/location-dot.svg" width="15"
+                    height="15" alt="icon location dot">
             </div>
-            <p class="error-info">Ville non trouvée</p>
-        </form>
-    </div>
+            <div class="min-max">
+                <span class="temp-min"></span> /
+                <span class="temp-max"></span>
+                Ressenti <span class="feel"></span>
+            </div>
+            <form id="form" action="">
+                <div class="container-input">
+                    <input placeholder="Entrez une ville" type="text" name="setCity" id="setCity" required>
+                    <button>Ok</button>
+                </div>
+                <p class="error-info">Ville non trouvée</p>
+            </form>
+        </div>
+        <div class="slider__bot">
 
+        </div>
+    </div>
+    <!------- SLIDER ------->
+    <div class="loader">App Météo</div>
     <main class="main">
-        <div class="grid-box">
+        <div class="boxes__current">
             <div class="box">
                 <div class="icon-container">
                     <img class="icon" src="./assets/iconMeteo/10d.svg" alt="icon humidity">
@@ -98,7 +105,18 @@
                 Coucher du soleil
                 <span class="sunset"></span>
             </div>
+        </div>
 
+        <div id="boxes__hour">
+            <!-- <div class="box">
+                <div class="day">${day}</div>
+                <div class="date">${formatDate(dataDate)}</div>
+                <div class="hour">${formatHour(dataHour)}</div>
+                <div class="icon-container">
+                    <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset">
+                </div>
+                <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
+            </div> -->
         </div>
     </main>
 

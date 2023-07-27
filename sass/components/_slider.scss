@@ -6,16 +6,42 @@
     width: 80%;
     max-width: 32rem;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    background-color: $main-color;
-    border-radius: 0 20px 20px 0;
-    padding: 3rem;
+    background-color: #fff;
+    border-radius: 0 0 $radius 0;
     transform: translateX(-100%);
     transition: transform 0.4s cubic-bezier(0.73, 0.11, 0.67, 0.84);
+
+    &__top {
+      position: relative;
+      background-color: $main-color;
+      width: 100%;
+      padding: 5rem 2rem;
+      border-radius: 0 0 0 $radius;
+    }
+    &__top::after,&__top::before{
+      content: '';
+      position: absolute;
+      bottom: -50px;
+      right: 0;
+      height: 50px;
+      width: 50px;
+      background-color: $main-color;
+    }
+    &__top::after{
+      background-color: #fff;
+      border-radius:  0 $radius 0 0;
+    }
+    &__bot {
+      flex: 1;
+      height: 10rem;
+      width: 100%;
+      background-color: #fff;
+    }
+    .cityName {
+      font-size: 2.8rem;
+    }
     .min-max {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
     }
 }
 .slider.active {

@@ -1,38 +1,58 @@
-const keyAPI = '6f43c7305020f81c3276859a5f0cd312'
-const city = 'Paris'
-const errorInfo = document.querySelector('.error-info')
+// Clé API pour accéder aux données météorologiques
+const keyAPI = '6f43c7305020f81c3276859a5f0cd312';
 
+// Élément HTML pour afficher les erreurs
+const errorInfo = document.querySelector('.error-info');
+const loader = document.querySelector('.loader')
+
+/**
+ * Effectue une requête HTTP GET sur l'URL spécifiée et renvoie les données au format JSON.
+ * @param {string} url - L'URL à partir de laquelle récupérer les données JSON.
+ * @returns {Promise} Une promesse résolue avec les données JSON si la requête réussit, ou une promesse rejetée avec l'erreur si la requête échoue.
+ */
 async function getFetchData(url) {
     try {
-        const resJSON = await fetch(url)
-        if (!resJSON.ok) {
-            throw new Error('Connexion serveur impossible!')
-        }
-        return resJSON.json()
+        const response = await fetch(url);
 
+        // Vérifier si la réponse est OK (statut HTTP 200-299).
+        if (!response.ok) {
+            throw new Error('Connexion serveur impossible!');
+        }
+
+        // Récupérer et renvoyer les données au format JSON.
+        return response.json();
     } catch (error) {
-        console.error("=== ERROR === " + error);
+        console.error("Erreur lors de la requête HTTP:", error);
+        throw error;
     }
 }
 
+/**
+ * Récupère les données météorologiques pour une ville donnée et les affiche sur la page.
+ * @param {string} city - Le nom de la ville pour laquelle récupérer les données météorologiques.
+ */
 async function getWeatherData(city) {
     try {
-        const coordinates = await getFetchData(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${keyAPI}`)
+        // Récupérer les coordonnées géographiques de la ville en utilisant l'API de géolocalisation.
+        const coordinates = await getFetchData(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${keyAPI}`);
 
+        // Vérifier si la ville n'a pas été trouvée.
         if (coordinates.length === 0) {
-            throw new Error('Ville non trouvée!')
+            throw new Error('Ville non trouvée!');
         }
 
-        const cityName = coordinates[0].name
-        const lat = coordinates[0].lat
-        const lon = coordinates[0].lon
-        // console.log("Coordinates" + cityName, lat, lon);
+        // Récupérer les coordonnées et le nom de la ville à partir des données de géolocalisation.
+        const cityName = coordinates[0].name;
+        const lat = coordinates[0].lat;
+        const lon = coordinates[0].lon;
 
-        const dataWeather = await getFetchData(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${keyAPI}&units=metric&lang=fr`)
-        console.log(dataWeather);
-        const weather5day = await getFetchData(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${keyAPI}&units=metric&lang=fr`)
-        // console.log(weather5day);
+        // Récupérer les données météorologiques actuelles en utilisant les coordonnées géographiques.
+        const dataWeather = await getFetchData(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${keyAPI}&units=metric&lang=fr`);
 
+        // Récupérer les prévisions météorologiques sur 5 jours en utilisant les coordonnées géographiques.
+        const weather5day = await getFetchData(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${keyAPI}&units=metric&lang=fr`);
+
+        // Créer un objet contenant les données météorologiques actuelles.
         const currentWeather = {
             cityName: cityName,
             temp: dataWeather.main.temp.toFixed(0),
@@ -46,8 +66,9 @@ async function getWeatherData(city) {
             sunrise: dataWeather.sys.sunrise,
             sunset: dataWeather.sys.sunset,
             list: []
-        }
+        };
 
+        // Ajouter les prévisions horaires aux données météorologiques actuelles.
         weather5day.list.forEach((item) => {
             currentWeather.list.push({
                 dt: item.dt,
@@ -57,66 +78,185 @@ async function getWeatherData(city) {
                 tempMax: item.main.temp_max,
                 humidity: item.main.humidity,
                 icon: item.weather[0].icon
-            })
-        })
+            });
+        });
 
-        addElements(currentWeather)
+        // Afficher les données météorologiques sur la page.
+        addElements(currentWeather);
     } catch (error) {
+        // En cas d'erreur, afficher l'erreur dans la console et afficher un message d'erreur à l'utilisateur.
         console.error("=== ERROR === " + error);
-
-        errorInfo.style.display = 'block'
+        errorInfo.style.display = 'block';
     }
-
 }
+getWeatherData('Paris')
 
-getWeatherData(city)
-
+/**
+ * Ajoute les éléments HTML avec les données météorologiques à la page.
+ * @param {Object} data - Les données météorologiques à afficher sur la page.
+ */
 function addElements(data) {
-    console.log(data);
-    const cities = document.querySelectorAll('.cityName')
-    cities.forEach(city => city.textContent = data.cityName)
+    try {
+        // Afficher les données dans les éléments HTML correspondants.
 
-    const temp = document.querySelector('.temp')
-    temp.textContent = `${data.temp}°`
+        const cities = document.querySelectorAll('.cityName');
+        cities.forEach(city => city.textContent = data.cityName);
 
-    const description = document.querySelector('.description')
-    description.textContent = data.description
+        const temp = document.querySelector('.temp');
+        temp.textContent = `${data.temp}°`;
 
-    const tempMins = document.querySelectorAll('.temp-min')
-    tempMins.forEach(tempMin => tempMin.textContent = `${data.tempMin}°`)
+        const description = document.querySelector('.description');
+        description.textContent = data.description;
 
-    const tempMaxs = document.querySelectorAll('.temp-max')
-    tempMaxs.forEach(tempMax => tempMax.textContent = `${data.tempMax}°`)
+        const tempMins = document.querySelectorAll('.temp-min');
+        tempMins.forEach(tempMin => tempMin.textContent = `${data.tempMin}°`);
 
-    const feels = document.querySelectorAll('.feel')
-    feels.forEach(feel => feel.textContent = `${data.feelsLike}°`)
+        const tempMaxs = document.querySelectorAll('.temp-max');
+        tempMaxs.forEach(tempMax => tempMax.textContent = `${data.tempMax}°`);
 
-    const iconWeather = document.querySelector('.header-bot__icon-weather')
-    iconWeather.src = `assets/iconMeteo/${data.icon}.svg`
+        const feels = document.querySelectorAll('.feel');
+        feels.forEach(feel => feel.textContent = `${data.feelsLike}°`);
 
-    const humidity = document.querySelector('.humidity')
-    humidity.textContent = `${data.humidity}%`
+        const iconWeather = document.querySelector('.header-bot__icon-weather');
+        iconWeather.src = `assets/iconMeteo/${data.icon}.svg`;
 
-    const wind = document.querySelector('.wind')
-    wind.textContent = `${data.wind} km/h`
+        const humidity = document.querySelector('.humidity');
+        humidity.textContent = `${data.humidity}%`;
 
-    const sunset = document.querySelector('.sunset')
-    sunset.textContent = getLocaleTime(data.sunset)
-    const sunrise = document.querySelector('.sunrise')
-    sunrise.textContent = getLocaleTime(data.sunrise)
+        const wind = document.querySelector('.wind');
+        wind.textContent = `${data.wind} km/h`;
 
+        const sunset = document.querySelector('.sunset');
+        sunset.textContent = getLocaleTime(data.sunset);
+
+        const sunrise = document.querySelector('.sunrise');
+        sunrise.textContent = getLocaleTime(data.sunrise);
+
+        // Afficher les prévisions météo pour les prochaines heures dans l'élément ayant l'ID 'boxes__hour'.
+        const boxesHour = document.getElementById('boxes__hour');
+        const NBitem = 36; // Maximum 36 éléments à afficher
+        boxesHour.innerHTML = '';
+        for (let i = 1; i <= NBitem && i < data.list.length; i++) {
+            const [dataDate, dataHour] = data.list[i].dtTxt.split(' ');
+
+            const item = `<div class="box">
+                      <div class="day">${getDayLetter(data.list[i].dt)}</div>
+                      <div class="date">${formatDate(dataDate)}</div>
+                      <div class="hour">${formatHour(dataHour)}</div>
+                      <div class="icon-container">
+                          <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset">
+                      </div>
+                      <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
+                  </div>`;
+
+            boxesHour.insertAdjacentHTML('beforeend', item);
+        }
+
+        // Supprime le loader
+        loader.classList.add('active')
+        setTimeout(() => loader.style.display = 'none', 1800)
+
+    } catch (error) {
+        console.error("Erreur lors de l'ajout des éléments météorologiques:", error);
+    }
 }
 
-function getLocaleTime(timePerSecond) {
-    const date = new Date(timePerSecond * 1000);
-    const time = date.toLocaleTimeString();
-    const timeSplit = time.split(':')
-    timeSplit.pop()
-    const newTime = timeSplit.join(':')
-    return newTime
+
+/**
+ * Obtient le nom du jour de la semaine à partir d'un horodatage Unix.
+ * @param {number} timestamp - L'horodatage Unix (en secondes) pour lequel récupérer le nom du jour.
+ * @returns {string} Le nom du jour de la semaine (en français).
+ */
+function getDayLetter(timestamp) {
+    try {
+        // Convertir l'horodatage en millisecondes, car Date() attend des millisecondes.
+        const date = new Date(timestamp * 1000);
+
+        // Obtenir le numéro du jour de la semaine (0 pour dimanche, 1 pour lundi, etc.).
+        const dayNumber = date.getDay();
+
+        // Tableau contenant les noms des jours de la semaine en français.
+        const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+
+        // Récupérer le nom du jour de la semaine à partir du tableau daysOfWeek.
+        const dayName = daysOfWeek[dayNumber];
+
+        return dayName;
+    } catch (error) {
+        console.error("Erreur lors de la récupération du nom du jour de la semaine:", error);
+        return '';
+    }
 }
 
-// Slider
+
+/**
+ * Formate une heure au format "HH:mm:ss" en "HH:mm".
+ * @param {string} hour - L'heure à formater au format "HH:mm:ss".
+ * @returns {string} L'heure formatée au format "HH:mm".
+ */
+function formatHour(hour) {
+    try {
+        // Séparer l'heure, les minutes et les secondes en utilisant ":" comme délimiteur.
+        const [hourPart, minutesPart] = hour.split(':');
+
+        // Formater l'heure au format "HH:mm".
+        const formattedHour = `${hourPart}:${minutesPart}`;
+
+        return formattedHour;
+    } catch (error) {
+        console.error("Erreur lors du formatage de l'heure:", error);
+        return '';
+    }
+}
+
+/**
+ * Formate une date au format "YYYY-MM-DD" en "MM-DD".
+ * @param {string} date - La date à formater au format "YYYY-MM-DD".
+ * @returns {string} La date formatée au format "MM-DD".
+ */
+function formatDate(date) {
+    try {
+        // Séparer l'année, le mois et le jour en utilisant "-" comme délimiteur,
+
+        const [year, month, day] = date.split('-');
+        // Formater la date au format "DD-MM".
+        const formattedDate = `${day}-${month}`;
+
+        return formattedDate;
+    } catch (error) {
+        console.error("Erreur lors du formatage de la date:", error);
+        return '';
+    }
+}
+
+
+/**
+ * Récupère l'heure locale (au format "HH:mm") à partir d'un horodatage Unix.
+ * @param {number} timestamp - L'horodatage Unix (en secondes) pour lequel récupérer l'heure locale.
+ * @returns {string} L'heure locale formatée au format "HH:mm".
+ */
+function getLocaleTime(timestamp) {
+    try {
+        // Convertir l'horodatage en millisecondes, car Date() attend des millisecondes.
+        const date = new Date(timestamp * 1000);
+
+        // Obtenir l'heure locale sous forme de chaîne de caractères (ex: "HH:mm:ss").
+        const time = date.toLocaleTimeString();
+
+        // Séparer l'heure, les minutes et les secondes en utilisant ":" comme délimiteur.
+        const [hour, minutes] = time.split(':');
+
+        // Formater l'heure au format "HH:mm".
+        const formattedTime = `${hour}:${minutes}`;
+
+        return formattedTime;
+    } catch (error) {
+        console.error("Erreur lors de la conversion de l'horodatage en heure locale:", error);
+        return '';
+    }
+}
+
+// Slider ------------------------------------------------
 const sliderBtn = document.querySelector(".slider-btn")
 const slider = document.querySelector(".slider")
 
@@ -127,13 +267,14 @@ function toggleNav() {
     slider.classList.toggle("active")
 }
 
-// Form
+// Form ---------------------------------------------------
 const form = document.getElementById('form')
 form.setCity.addEventListener('input', () => {
     errorInfo.style.display = 'none'
 })
 form.addEventListener('submit', (e) => {
     e.preventDefault()
-    getWeatherData(form.setCity.value.trim() || 'paris')
-    // form.reset()
+    const city = form.setCity.value.trim() || 'paris';
+    getWeatherData(city);
+    form.reset()
 })
