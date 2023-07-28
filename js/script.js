@@ -1,13 +1,12 @@
 // Clé API pour accéder aux données météorologiques
-import { keyAPI } from "./config.js";
+import { API_KEY } from "./config.js";
 
-const arrayCities = localStorage.getItem('arrayCities') ? JSON.parse(localStorage.getItem('arrayCities')) : ['PARIS']
+const arrayCities = localStorage.getItem('arrayCities') ? JSON.parse(localStorage.getItem('arrayCities')) : [{ name: 'Paris' }]
 
 // Élément HTML pour afficher les erreurs
 const errorInfo = document.querySelector('.error-info');
 // Loader
 const loader = document.querySelector('.loader')
-
 
 /**
  * Met à jour l'affichage d'une liste de villes sur une page web en fonction du contenu du tableau arrayCities.
@@ -18,16 +17,15 @@ const loader = document.querySelector('.loader')
 function updateListCities(arrayCities) {
     const citiesContainer = document.getElementById('cities__container')
     citiesContainer.innerHTML = ''
+    // let item
     let i = 0;
     for (const city of arrayCities) {
-        const p = document.createElement('p')
-        if (i === 0) {
-            p.textContent = `${city} ⭐`
-        } else {
-            p.textContent = `${city}`
-        }
+        let item = `<p>${city.name}
+                        <span class="temp">${city.temp}°</span>
+                        <img src="assets/iconMeteo/${city.icon}.svg" alt="icon meteo" width="64" height="64">${i === 0 ? "⭐" : ""}
+                    </p>`
         i++
-        citiesContainer.appendChild(p)
+        citiesContainer.innerHTML += item
     }
     setListCity()
 }
@@ -35,27 +33,25 @@ function updateListCities(arrayCities) {
 /**
  * Met à jour un tableau de villes en suivant les règles suivantes :
  * 1. Si la ville existe déjà dans le tableau, elle est déplacée au début du tableau.
- * 2. Le tableau est tronqué pour conserver uniquement les 3 premiers éléments s'il en contient plus.
+ * 2. Le tableau est tronqué pour conserver uniquement les 5 premiers éléments s'il en contient plus.
  *
- * @param {string[]} arrayCities - Le tableau de villes à mettre à jour.
- * @param {string} city - La ville à ajouter/mettre à jour dans le tableau.
- * @returns {string[]} Le tableau de villes mis à jour.
+ * @param {Object[]} arrayCities - Le tableau de villes à mettre à jour.
+ * @param {Object} cityObj - L'objet contenant les informations de la ville à ajouter/mettre à jour dans le tableau.
+ * @returns {Object[]} Le tableau de villes mis à jour.
  */
-function rangeArrayCities(arrayCities, city) {
-    city = city.toLocaleUpperCase()
+function rangeArrayCities(arrayCities, cityObj) {
+    const indexOfCity = arrayCities.findIndex(c => c.name === cityObj.name);
 
-    const indexOfCity = arrayCities.findIndex(c => c === city);
     if (indexOfCity !== -1) {
         arrayCities.splice(indexOfCity, 1)
     }
-    arrayCities.unshift(city)
-
+    arrayCities.unshift(cityObj)
     if (arrayCities.length > 5) {
         arrayCities.length = 5;
     }
+
     return arrayCities
 }
-
 
 /**
  * Effectue une requête HTTP GET sur l'URL spécifiée et renvoie les données au format JSON.
@@ -79,6 +75,9 @@ async function getFetchData(url) {
     }
 }
 
+const GEO_API_URL = "http://api.openweathermap.org/geo/1.0/direct";
+const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather";
+const FORECAST_API_URL = "http://api.openweathermap.org/data/2.5/forecast";
 /**
  * Récupère les données météorologiques pour une ville donnée et les affiche sur la page.
  * 
@@ -86,10 +85,11 @@ async function getFetchData(url) {
  */
 async function getWeatherData(city) {
     try {
-        // Récupérer les coordonnées géographiques de la ville en utilisant l'API de géolocalisation.
-        const coordinates = await getFetchData(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${keyAPI}`);
+        city = city.toLocaleUpperCase();
 
-        // Vérifier si la ville n'a pas été trouvée.
+        // Récupérer les coordonnées géographiques de la ville en utilisant l'API de géolocalisation.
+        const coordinates = await getFetchData(`${GEO_API_URL}?q=${city}&limit=5&appid=${API_KEY}`);
+
         if (coordinates.length === 0) {
             throw new Error('Ville non trouvée!');
         }
@@ -100,52 +100,70 @@ async function getWeatherData(city) {
         const lon = coordinates[0].lon;
 
         // Récupérer les données météorologiques actuelles en utilisant les coordonnées géographiques.
-        const dataWeather = await getFetchData(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${keyAPI}&units=metric&lang=fr`);
+        const dataWeather = await getFetchData(`${WEATHER_API_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=fr`);
 
         // Récupérer les prévisions météorologiques sur 5 jours en utilisant les coordonnées géographiques.
-        const weather5day = await getFetchData(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${keyAPI}&units=metric&lang=fr`);
+        const weather5day = await getFetchData(`${FORECAST_API_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=fr`);
 
         // Créer un objet contenant les données météorologiques actuelles.
-        const currentWeather = {
-            cityName: cityName,
-            temp: dataWeather.main.temp.toFixed(0),
-            feelsLike: dataWeather.main.feels_like.toFixed(0),
-            tempMin: dataWeather.main.temp_min.toFixed(0),
-            tempMax: dataWeather.main.temp_max.toFixed(0),
-            humidity: dataWeather.main.humidity,
-            icon: dataWeather.weather[0].icon,
-            description: dataWeather.weather[0].description,
-            wind: (dataWeather.wind.speed * 3.6).toFixed(0),
-            sunrise: dataWeather.sys.sunrise,
-            sunset: dataWeather.sys.sunset,
-            list: []
-        };
-
-        // Ajouter les prévisions horaires aux données météorologiques actuelles.
-        weather5day.list.forEach((item) => {
-            currentWeather.list.push({
-                dt: item.dt,
-                dtTxt: item.dt_txt,
-                temp: item.main.temp,
-                tempMin: item.main.temp_min,
-                tempMax: item.main.temp_max,
-                humidity: item.main.humidity,
-                icon: item.weather[0].icon
-            });
-        });
-
+        const currentWeather = createCurrentWeatherObject(cityName, dataWeather, weather5day);
+        console.log('Appel API');
         // Afficher les données météorologiques sur la page.
         addElements(currentWeather);
-        console.log(currentWeather);
-        const newArrayCities = rangeArrayCities(arrayCities, cityName)
-        // Sauvegarde dans le localStorage le tableau de villes
-        localStorage.setItem('arrayCities', JSON.stringify(newArrayCities))
-        updateListCities(arrayCities)
+
+        const cityObj = {
+            name: cityName,
+            temp: currentWeather.temp,
+            icon: currentWeather.icon
+        };
+        const newArrayCities = rangeArrayCities(arrayCities, cityObj);
+        localStorage.setItem('arrayCities', JSON.stringify(newArrayCities));
+        updateListCities(arrayCities);
 
     } catch (error) {
         console.error("=== ERROR === " + error);
         errorInfo.style.display = 'block';
     }
+}
+
+/**
+ * Crée un objet contenant les données météorologiques actuelles.
+ * 
+ * @param {string} cityName - Le nom de la ville.
+ * @param {object} dataWeather - Les données météorologiques actuelles.
+ * @param {object} weather5day - Les prévisions météorologiques sur 5 jours.
+ * @returns {object} L'objet contenant les données météorologiques actuelles.
+ */
+function createCurrentWeatherObject(cityName, dataWeather, weather5day) {
+    const currentWeather = {
+        cityName: cityName,
+        temp: dataWeather.main.temp.toFixed(0),
+        feelsLike: dataWeather.main.feels_like.toFixed(0),
+        tempMin: dataWeather.main.temp_min.toFixed(0),
+        tempMax: dataWeather.main.temp_max.toFixed(0),
+        humidity: dataWeather.main.humidity,
+        icon: dataWeather.weather[0].icon,
+        description: dataWeather.weather[0].description,
+        wind: (dataWeather.wind.speed * 3.6).toFixed(0),
+        sunrise: dataWeather.sys.sunrise,
+        sunset: dataWeather.sys.sunset,
+        list: []
+    };
+
+    // Ajouter les prévisions horaires aux données météorologiques actuelles.
+    weather5day.list.forEach((item) => {
+        currentWeather.list.push({
+            dt: item.dt,
+            dtTxt: item.dt_txt,
+            temp: item.main.temp,
+            tempMin: item.main.temp_min,
+            tempMax: item.main.temp_max,
+            humidity: item.main.humidity,
+            icon: item.weather[0].icon
+        });
+    });
+
+    return currentWeather;
 }
 
 
@@ -202,7 +220,7 @@ function addElements(data) {
                       <div class="date">${formatDate(dataDate)}</div>
                       <div class="hour">${formatHour(dataHour)}</div>
                       <div class="icon-container">
-                          <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset">
+                          <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset" width="64" height="64">
                       </div>
                       <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
                   </div>`;
@@ -218,7 +236,6 @@ function addElements(data) {
         console.error("Erreur lors de l'ajout des éléments météorologiques:", error);
     }
 }
-
 
 /**
  * Obtient le nom du jour de la semaine à partir d'un horodatage Unix.
@@ -245,7 +262,6 @@ function getDayLetter(timestamp) {
         return '';
     }
 }
-
 
 /**
  * Formate une heure au format "HH:mm:ss" en "HH:mm".
@@ -287,7 +303,6 @@ function formatDate(date) {
     }
 }
 
-
 /**
  * Récupère l'heure locale (au format "HH:mm") à partir d'un horodatage Unix.
  * @param {number} timestamp - L'horodatage Unix (en secondes) pour lequel récupérer l'heure locale.
@@ -314,7 +329,6 @@ function getLocaleTime(timestamp) {
     }
 }
 
-
 // Slider ------------------------------------------------
 const sliderBtn = document.querySelector(".slider-btn")
 const slider = document.querySelector(".slider")
@@ -338,12 +352,12 @@ form.addEventListener('submit', (e) => {
     form.reset()
 })
 
-getWeatherData(arrayCities[0])
+getWeatherData(arrayCities[0].name)
 updateListCities(arrayCities)
 
 function setListCity() {
     const cities = document.querySelectorAll('#cities__container p')
     cities.forEach(city => city.addEventListener('click', () => {
-        getWeatherData(city.textContent);
+        getWeatherData(city.childNodes[0].textContent);
     }))
 }

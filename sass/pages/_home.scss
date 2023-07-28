@@ -1,0 +1,73 @@
+.main {
+    @include container;
+    margin-bottom: 3rem;
+}
+
+.boxes__current {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    .icon-container {
+        position: relative;
+        width: 6.4rem;
+        height: 6.4rem;
+        .icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+    }
+    .box:nth-child(1) .icon {
+        width: 130%;
+    }
+    .box:nth-child(3) .icon {
+        width: 180%;
+    }
+    .box:nth-child(4) .icon {
+        width: 140%;
+    }
+    .box span {
+        color: #ddd;
+        font-weight: 400;
+    }
+}
+
+@media screen and (min-width:700px) {
+    .boxes__current {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+#boxes__hour {
+    padding-top: 1.5rem;
+    border-top: 2px dashed rgba(255, 255, 255, 0.6);
+    margin-top: 1.5rem;
+    overflow: auto;
+    display: flex;
+    gap: 2px;
+    scroll-snap-type: x mandatory;
+    .box {
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+    .date {
+        font-size: 1.2rem;
+        color: #ddd;
+        margin: .5rem 0;
+    }
+    .hour {
+        font-weight: 400;
+    }
+    .temp-hour {
+        font-size: 1.6rem;
+    }
+}
+
+@media screen and (min-width:700px) {
+    #boxes__hour {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+    }
+}

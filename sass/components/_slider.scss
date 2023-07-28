@@ -11,45 +11,74 @@
     border-radius: 0 0 $radius 0;
     transform: translateX(-110%);
     transition: transform 0.4s cubic-bezier(0.73, 0.11, 0.67, 0.84);
-
-    &__top {
-      position: relative;
-      @include background-special;
-      width: 100%;
-      padding: 7rem 2rem;
-      border-radius: 0 0 0 $radius;
-    }
-    &__top::after,&__top::before{
-      content: '';
-      position: absolute;
-      bottom: -50px;
-      right: 0;
-      height: 50px;
-      width: 50px;
-      background-color: $secondary-color;
-    }
-    &__top::after{
-      background-color: $white-color;
-      border-radius:  0 $radius 0 0;
-    }
-    &__bot {
-      flex: 1;
-      height: 10rem;
-      width: 100%;
-      background-color: $white-color;
-    }
-    .cityName {
-      font-size: 2.8rem;
-    }
-    .min-max {
-      margin-top: 1.5rem;
-    }
-    button {
-      cursor: pointer;
-    }
 }
 .slider.active {
     transform: translateX(0);
+}
+
+.slider__top {
+  position: relative;
+  @include background-special;
+  width: 100%;
+  padding: 5rem 2rem;
+  border-radius: 0 0 0 $radius;
+
+  &::after,&::before{
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    right: 0;
+    height: 50px;
+    width: 50px;
+    background-color: $secondary-color;
+  }
+  &::after{
+    background-color: $white-color;
+    border-radius:  0 $radius 0 0;
+  }
+  .cityName {
+    font-size: 2.8rem;
+  }
+  .min-max {
+    margin-top: 1.5rem;
+  }
+  .temp-max {
+    margin-right: 1rem;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+.slider__bot {
+  padding: 3rem 2rem;
+  color: #444;
+  .city-max {
+    border-bottom: 3px solid $secondary-color;
+    width: fit-content;
+  }
+  #cities__container {
+      p{
+          font-weight: 600;
+          width: fit-content;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          height: 2rem;
+          margin: 2.8rem 0;
+      }
+      .temp {
+          margin-left: 1.4rem;
+          font-weight: 900;
+          font-size: 1.8rem;
+      }
+  }
+  .copyright {
+      position: absolute;
+      margin-top:auto ;
+      bottom: 0;
+      color: $main-color;
+  }
 }
 
 .slider-btn {
