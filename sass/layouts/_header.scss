@@ -3,9 +3,7 @@
 }
 .header-top {
     position: relative;
-    width: 85%;
-    max-width: 80rem;
-    margin: auto;
+    @include container;
     min-height: 6rem;
     display: flex;
     align-items: center;
@@ -13,9 +11,7 @@
 }
 
 .header-bot {
-    width: 85%;
-    max-width: 80rem;
-    margin: auto;
+    @include container;
     display: flex;
     justify-content: space-between;
     align-items: center;

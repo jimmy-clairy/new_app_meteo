@@ -1,9 +1,61 @@
 // Clé API pour accéder aux données météorologiques
-const keyAPI = '6f43c7305020f81c3276859a5f0cd312';
+import { keyAPI } from "./config.js";
+
+const arrayCities = localStorage.getItem('arrayCities') ? JSON.parse(localStorage.getItem('arrayCities')) : ['PARIS']
 
 // Élément HTML pour afficher les erreurs
 const errorInfo = document.querySelector('.error-info');
+// Loader
 const loader = document.querySelector('.loader')
+
+
+/**
+ * Met à jour l'affichage d'une liste de villes sur une page web en fonction du contenu du tableau arrayCities.
+ * Efface le contenu actuel du conteneur d'affichage (citiesContainer) et ajoute les villes du tableau arrayCities comme des paragraphes (éléments <p>) dans le conteneur.
+ *
+ * @param {string[]} arrayCities - Le tableau de villes utilisé pour mettre à jour l'affichage.
+ */
+function updateListCities(arrayCities) {
+    const citiesContainer = document.getElementById('cities__container')
+    citiesContainer.innerHTML = ''
+    let i = 0;
+    for (const city of arrayCities) {
+        const p = document.createElement('p')
+        if (i === 0) {
+            p.textContent = `${city} ⭐`
+        } else {
+            p.textContent = `${city}`
+        }
+        i++
+        citiesContainer.appendChild(p)
+    }
+    setListCity()
+}
+
+/**
+ * Met à jour un tableau de villes en suivant les règles suivantes :
+ * 1. Si la ville existe déjà dans le tableau, elle est déplacée au début du tableau.
+ * 2. Le tableau est tronqué pour conserver uniquement les 3 premiers éléments s'il en contient plus.
+ *
+ * @param {string[]} arrayCities - Le tableau de villes à mettre à jour.
+ * @param {string} city - La ville à ajouter/mettre à jour dans le tableau.
+ * @returns {string[]} Le tableau de villes mis à jour.
+ */
+function rangeArrayCities(arrayCities, city) {
+    city = city.toLocaleUpperCase()
+
+    const indexOfCity = arrayCities.findIndex(c => c === city);
+    if (indexOfCity !== -1) {
+        arrayCities.splice(indexOfCity, 1)
+    }
+    arrayCities.unshift(city)
+
+    if (arrayCities.length > 5) {
+        arrayCities.length = 5;
+    }
+    return arrayCities
+}
+
 
 /**
  * Effectue une requête HTTP GET sur l'URL spécifiée et renvoie les données au format JSON.
@@ -29,6 +81,7 @@ async function getFetchData(url) {
 
 /**
  * Récupère les données météorologiques pour une ville donnée et les affiche sur la page.
+ * 
  * @param {string} city - Le nom de la ville pour laquelle récupérer les données météorologiques.
  */
 async function getWeatherData(city) {
@@ -83,13 +136,18 @@ async function getWeatherData(city) {
 
         // Afficher les données météorologiques sur la page.
         addElements(currentWeather);
+        console.log(currentWeather);
+        const newArrayCities = rangeArrayCities(arrayCities, cityName)
+        // Sauvegarde dans le localStorage le tableau de villes
+        localStorage.setItem('arrayCities', JSON.stringify(newArrayCities))
+        updateListCities(arrayCities)
+
     } catch (error) {
-        // En cas d'erreur, afficher l'erreur dans la console et afficher un message d'erreur à l'utilisateur.
         console.error("=== ERROR === " + error);
         errorInfo.style.display = 'block';
     }
 }
-getWeatherData('Paris')
+
 
 /**
  * Ajoute les éléments HTML avec les données météorologiques à la page.
@@ -154,7 +212,7 @@ function addElements(data) {
 
         // Supprime le loader
         loader.classList.add('active')
-        setTimeout(() => loader.style.display = 'none', 1800)
+        setTimeout(() => loader.style.display = 'none', 1000)
 
     } catch (error) {
         console.error("Erreur lors de l'ajout des éléments météorologiques:", error);
@@ -256,6 +314,7 @@ function getLocaleTime(timestamp) {
     }
 }
 
+
 // Slider ------------------------------------------------
 const sliderBtn = document.querySelector(".slider-btn")
 const slider = document.querySelector(".slider")
@@ -278,3 +337,13 @@ form.addEventListener('submit', (e) => {
     getWeatherData(city);
     form.reset()
 })
+
+getWeatherData(arrayCities[0])
+updateListCities(arrayCities)
+
+function setListCity() {
+    const cities = document.querySelectorAll('#cities__container p')
+    cities.forEach(city => city.addEventListener('click', () => {
+        getWeatherData(city.textContent);
+    }))
+}

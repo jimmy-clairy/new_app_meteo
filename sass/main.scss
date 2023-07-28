@@ -2,15 +2,15 @@
 @import "utils/mixins";
 @import "bases/reset";
 @import "bases/general";
+@import "layouts/header";
 @import "components/slider";
 @import "components/form";
 @import "components/box";
-@import "layouts/header";
+@import "components/loader";
 
 .main {
-    width: 85%;
-    max-width: 80rem;
-    margin: 0 auto 3rem;
+    @include container;
+    margin-bottom: 3rem;
 }
 
 .boxes__current {
@@ -81,20 +81,26 @@
         gap: 10px;
     }
 }
-
-.loader {
-    position: fixed;
-    z-index: 20;
-    top: 0;
-    width: 100%;
-    height: 100vh;
-    @include background-special;
+.slider__bot {
+    padding: 3rem 2rem;
+    color: #444;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 5.5rem;
-    transition: opacity 2s;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto;
 }
-.loader.active {
-    opacity: 0;
+#cities__container {
+    
+    p{
+        font-weight: 600;
+        width: fit-content;
+        min-width: 10rem;
+        cursor: pointer;
+    }
+}
+
+.copyright {
+    position: absolute;
+    margin-top:auto ;
+    bottom: 0;
 }
