@@ -75,9 +75,9 @@ async function getFetchData(url) {
     }
 }
 
-const GEO_API_URL = "http://api.openweathermap.org/geo/1.0/direct";
+const GEO_API_URL = "https://api.openweathermap.org/geo/1.0/direct";
 const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather";
-const FORECAST_API_URL = "http://api.openweathermap.org/data/2.5/forecast";
+const FORECAST_API_URL = "https://api.openweathermap.org/data/2.5/forecast";
 /**
  * Récupère les données météorologiques pour une ville donnée et les affiche sur la page.
  * 
@@ -104,7 +104,7 @@ async function getWeatherData(city) {
 
         // Récupérer les prévisions météorologiques sur 5 jours en utilisant les coordonnées géographiques.
         const weather5day = await getFetchData(`${FORECAST_API_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=fr`);
-
+        console.log(dataWeather);
         // Créer un objet contenant les données météorologiques actuelles.
         const currentWeather = createCurrentWeatherObject(cityName, dataWeather, weather5day);
         console.log('Appel API');
