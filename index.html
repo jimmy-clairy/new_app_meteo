@@ -77,12 +77,16 @@
                 <div id="cities__container"></div>
             </div>
             <p class="underline">Options</p>
+            <div class="checkForDay">
+                <label for="checkForDay">Méteo / Jour</label>
+                <input type="checkbox" name="checkForDay" id="checkForDay" checked>
+            </div>
             <div class="checkFor3H">
-                <label for="checkFor3H">Méteo 3h</label>
+                <label for="checkFor3H">Méteo / 3h</label>
                 <input type="checkbox" name="checkFor3H" id="checkFor3H" checked>
             </div>
             <p class="copyright">
-                <a href="https://jimmypro.fr/" target="_blank" rel="noopener noreferrer">Create by Clairy Jimmy</a>
+                <a href="https://jimmypro.fr/" target="_blank" rel="noopener noreferrer">© Create by Clairy Jimmy</a>
             </p>
         </div>
     </div>
@@ -123,29 +127,35 @@
                 <span class="sunset"></span>
             </div>
         </div>
+        <div class="boxes">
+            <p>/ Jour</p>
+            <div id="boxes__day">
+                <!-- <div class="box">
+                    <div class="day">${day}</div>
+                    <div class="date">${formatDate(dataDate)}</div>
+                    <div class="hour">${formatHour(dataHour)}</div>
+                    <div class="icon-container">
+                        <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset">
+                    </div>
+                    <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
+                </div> -->
+            </div>
+        </div>
+        <div class="boxes">
+            <p>/ 3h</p>
+            <div id="boxes__3H">
+                <!-- <div class="box">
+                <div class="day">${day}</div>
+                <div class="date">${formatDate(dataDate)}</div>
+                <div class="hour">${formatHour(dataHour)}</div>
+                <div class="icon-container">
+                    <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset">
+                </div>
+                <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
+            </div> -->
+            </div>
+        </div>
 
-        <div id="boxes__day">
-            <!-- <div class="box">
-                <div class="day">${day}</div>
-                <div class="date">${formatDate(dataDate)}</div>
-                <div class="hour">${formatHour(dataHour)}</div>
-                <div class="icon-container">
-                    <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset">
-                </div>
-                <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
-            </div> -->
-        </div>
-        <div id="boxes__3H">
-            <!-- <div class="box">
-                <div class="day">${day}</div>
-                <div class="date">${formatDate(dataDate)}</div>
-                <div class="hour">${formatHour(dataHour)}</div>
-                <div class="icon-container">
-                    <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset">
-                </div>
-                <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
-            </div> -->
-        </div>
 
     </main>
 

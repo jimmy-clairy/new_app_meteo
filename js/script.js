@@ -209,46 +209,11 @@ function addElements(data) {
         const sunrise = document.querySelector('.sunrise');
         sunrise.textContent = getLocaleTime(data.sunrise);
 
-        // Afficher les prévisions météo pour les prochaines heures dans l'élément ayant l'ID 'boxes__hour'.
-        const NBitem = 36; // Maximum 36 éléments à afficher
-        boxes3H.innerHTML = '';
-        for (let i = 1; i <= NBitem && i < data.list.length; i++) {
-            const [dataDate, dataHour] = data.list[i].dtTxt.split(' ');
+        showBoxesFor3H(data.list)
 
-            const item = `<div class="box">
-                      <div class="day">${getDayLetter(data.list[i].dt)}</div>
-                      <div class="date">${formatDate(dataDate)}</div>
-                      <div class="hour">${formatHour(dataHour)}</div>
-                      <div class="icon-container">
-                          <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset" width="64" height="64">
-                      </div>
-                      <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
-                  </div>`;
+        const tempMinMax = getMinMax(data.list)
 
-            boxes3H.insertAdjacentHTML('beforeend', item);
-        }
-        // Afficher les prévisions météo pour les prochaines heures dans l'élément ayant l'ID 'boxes__hour'.
-        const NBitemDay = 36; // Maximum 36 éléments à afficher
-        boxesDay.innerHTML = '';
-        for (let i = 1; i <= NBitemDay && i < data.list.length; i++) {
-
-            const [dataDate, dataHour] = data.list[i].dtTxt.split(' ');
-            if (dataHour === '12:00:00') {
-                const item = `<div class="box">
-                <div class="day">${getDayLetter(data.list[i].dt)}</div>
-                <div class="date">${formatDate(dataDate)}</div>
-                <div class="hour">${formatHour(dataHour)}</div>
-                <div class="icon-container">
-                    <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset" width="64" height="64">
-                </div>
-                <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
-           
-
-            </div>`;
-
-                boxesDay.insertAdjacentHTML('beforeend', item);
-            }
-        }
+        showBoxesForDay(data.list, tempMinMax)
 
         // Supprime le loader
         loader.classList.add('active')
@@ -258,6 +223,126 @@ function addElements(data) {
         console.error("Erreur lors de l'ajout des éléments météorologiques:", error);
     }
 }
+
+/**
+ * Affiche les boîtes de prévisions météo pour les prochaines heures dans un élément HTML spécifié.
+ *
+ * @param {Array} data - Les données de prévisions météo pour les prochaines heures.
+ */
+function showBoxesFor3H(data) {
+    const maxItem = 17; // Maximum 36 éléments à afficher
+
+    // Récupération de l'élément conteneur des boîtes de prévisions par heures
+    const boxes3H = document.getElementById('boxes__3H');
+
+    if (!boxes3H) {
+        console.error("Element with ID 'boxes__3H' not found.");
+        return;
+    }
+
+    // Nettoyage du contenu précédent
+    boxes3H.innerHTML = '';
+
+    // Boucle pour afficher les boîtes de prévisions pour les prochaines heures
+    for (let i = 0; i < data.length && i <= maxItem; i++) {
+        const [dataDate, dataHour] = data[i].dtTxt.split(' ');
+
+        const item = `<div class="box">
+                    <div class="day">${getDayLetter(data[i].dt)}</div>
+                    <div class="date">${formatDate(dataDate)}</div>
+                    <div class="hour">${formatHour(dataHour)}</div>
+                    <div class="icon-container">
+                        <img class="icon-hour" src="./assets/iconMeteo/${data[i].icon}.svg" alt="icon météo" width="64" height="64">
+                    </div>
+                    <div class="temp-hour">${data[i].temp.toFixed(0)}°</div>
+                </div>`;
+
+        boxes3H.insertAdjacentHTML('beforeend', item);
+    }
+}
+
+/**
+ * Affiche les boîtes de prévisions météo pour les prochains jours dans un élément HTML spécifié.
+ *
+ * @param {Array} data - Les données de prévisions météo.
+ * @param {Array} tempMinMax - Les valeurs minimales et maximales de température pour chaque jour.
+ */
+function showBoxesForDay(data, tempMinMax) {
+    let startMinMax = 0;
+
+    // Afficher les prévisions météo pour les prochains jours dans l'élément ayant l'ID 'boxes__day'.
+    const NBitemDay = 36; // Maximum 36 éléments à afficher
+    boxesDay.innerHTML = '';
+
+    for (let i = 1; i <= NBitemDay && i < data.length; i++) {
+        const [dataDate, dataHour] = data[i].dtTxt.split(' ');
+
+        // Vérifier si l'heure est 12:00:00 pour afficher la prévision du midi
+        if (dataHour === '12:00:00') {
+            const item = `<div class="box">
+                            <div class="day">${getDayLetter(data[i].dt)}</div>
+                            <div class="date">${formatDate(dataDate)}</div>
+                            
+                            <div class="icon-container">
+                                <img class="icon-hour" src="./assets/iconMeteo/${data[i].icon}.svg" alt="icon météo" width="64" height="64">
+                            </div>
+                            <div class="temp-min-max">${tempMinMax[startMinMax].min}° / ${tempMinMax[startMinMax].max}°</div>
+                        </div>`;
+
+            boxesDay.insertAdjacentHTML('beforeend', item);
+            startMinMax++;
+        }
+    }
+}
+
+
+/**
+ * Calcule les valeurs minimales et maximales de température pour chaque jour à partir des données fournies.
+ *
+ * @param {Array} data - Les données de température à traiter.
+ * @returns {Array} Un tableau d'objets contenant les valeurs minimales et maximales de température pour chaque jour.
+ */
+function getMinMax(data) {
+    let arrayForDay = [];
+    let arraySubForDay = [];
+    let newDataDate = '';
+
+    // Parcours des données pour les regrouper par jour
+    for (const entry of data) {
+        const [dataDate] = entry.dtTxt.split(' ');
+
+        if (newDataDate === dataDate) {
+            arraySubForDay.push(entry);
+        } else {
+            arrayForDay.push(arraySubForDay);
+            arraySubForDay = [];
+            arraySubForDay.push(entry);
+        }
+        newDataDate = dataDate;
+    }
+
+    arrayForDay.splice(0, 2);
+
+    let arrayMinMax = [];
+
+    // Calcul des valeurs minimales et maximales pour chaque jour
+    for (const forDay of arrayForDay) {
+        let tempArray = [];
+        for (const day of forDay) {
+            tempArray.push(day.temp);
+        }
+
+        // Création d'un objet avec les valeurs minimales et maximales
+        const nextObject = {
+            min: Math.min(...tempArray).toFixed(0),
+            max: Math.max(...tempArray).toFixed(0),
+        };
+        arrayMinMax.push(nextObject);
+    }
+
+    return arrayMinMax;
+}
+
 
 /**
  * Obtient le nom du jour de la semaine à partir d'un horodatage Unix.
@@ -384,46 +469,60 @@ function setListCity() {
     }))
 }
 
-/**
- * Élément de case à cocher pour la durée de 3 heures.
- * @type {HTMLInputElement}
- */
-const checkboxFor3h = document.getElementById('checkFor3H');
-
-/**
- * Clé utilisée pour le stockage local.
- * @type {string}
- */
-const storageKey = 'checkFor3h';
+// Checked 3H ----------------------------------------
+const checkboxFor3H = document.getElementById('checkFor3H');
+const storageKeyFor3H = 'checkFor3H';
 
 // Récupérez la valeur du stockage local et convertissez-la en booléen.
-const storedValue = JSON.parse(localStorage.getItem(storageKey));
-
-// Affichez la valeur stockée dans la console.
-console.log('Stored value:', storedValue);
+const storedValueFor3H = JSON.parse(localStorage.getItem(storageKeyFor3H));
 
 const DISPLAY_GRID = 'grid';
 const DISPLAY_NONE = 'none';
 
 // Si la valeur stockée est nulle, initialisez l'affichage en fonction de la valeur par défaut.
+if (storedValueFor3H === null) {
+    handleCheckedFor3H();
+} else {
+    // Déterminez la valeur d'affichage en fonction de la valeur stockée.
+    const displayValue = storedValueFor3H ? DISPLAY_GRID : DISPLAY_NONE;
+    boxes3H.parentElement.style.display = displayValue;
+    checkboxFor3H.checked = storedValueFor3H;
+}
+
+checkboxFor3H.addEventListener('change', handleCheckedFor3H);
+function handleCheckedFor3H() {
+    const isChecked = checkboxFor3H.checked;
+
+    localStorage.setItem(storageKeyFor3H, isChecked);
+
+    const displayValue = isChecked ? DISPLAY_GRID : DISPLAY_NONE;
+    boxes3H.parentElement.style.display = displayValue;
+}
+
+
+// Checked Day----------------------------------------
+const checkboxForDay = document.getElementById('checkForDay');
+const storageKey = 'checkForDay';
+
+// Récupérez la valeur du stockage local et convertissez-la en booléen.
+const storedValue = JSON.parse(localStorage.getItem(storageKey));
+
+// Si la valeur stockée est nulle, initialisez l'affichage en fonction de la valeur par défaut.
 if (storedValue === null) {
-    handleChecked();
+    handleCheckedForDay();
 } else {
     // Déterminez la valeur d'affichage en fonction de la valeur stockée.
     const displayValue = storedValue ? DISPLAY_GRID : DISPLAY_NONE;
-    boxes3H.style.display = displayValue;
-    checkboxFor3h.checked = storedValue;
+    boxesDay.parentElement.style.display = displayValue;
+    checkboxForDay.checked = storedValue;
 }
 
-checkboxFor3h.addEventListener('change', handleChecked);
-/**
- * Gère l'événement de changement de la case à cocher.
- */
-function handleChecked() {
-    const isChecked = checkboxFor3h.checked;
+checkboxForDay.addEventListener('change', handleCheckedForDay);
+function handleCheckedForDay() {
+    const isChecked = checkboxForDay.checked;
 
     localStorage.setItem(storageKey, isChecked);
 
     const displayValue = isChecked ? DISPLAY_GRID : DISPLAY_NONE;
-    boxes3H.style.display = displayValue;
+    boxesDay.parentElement.style.display = displayValue;
 }
