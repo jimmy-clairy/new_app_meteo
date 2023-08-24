@@ -3,6 +3,7 @@
     margin-bottom: 3rem;
 }
 
+// BOXES CURRENT
 .boxes__current {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -42,16 +43,18 @@
         grid-template-columns: repeat(4, 1fr);
     }
 }
-#boxes__hour {
-    padding-top: 1.5rem;
-    border-top: 2px dashed rgba(255, 255, 255, 0.6);
+
+// BOXES HOUR
+#boxes__3H, #boxes__day {
     margin-top: 1.5rem;
+    border-top: 2px dashed rgba(255, 255, 255, 0.6);
+    padding: 1.5rem 0 0;
     overflow: auto;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(36, 1fr);
     gap: 2px;
     scroll-snap-type: x mandatory;
     .box {
-        flex-shrink: 0;
         scroll-snap-align: start;
     }
     .date {
@@ -63,13 +66,12 @@
         font-weight: 400;
     }
     .temp-hour {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
     }
 }
 
 @media screen and (min-width:700px) {
-    #boxes__hour {
-        display: grid;
+    #boxes__3H, #boxes__day {
         grid-template-columns: repeat(6, 1fr);
         gap: 10px;
     }

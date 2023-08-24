@@ -166,7 +166,8 @@ function createCurrentWeatherObject(cityName, dataWeather, weather5day) {
     return currentWeather;
 }
 
-
+const boxes3H = document.getElementById('boxes__3H');
+const boxesDay = document.getElementById('boxes__day');
 /**
  * Ajoute les éléments HTML avec les données météorologiques à la page.
  * @param {Object} data - Les données météorologiques à afficher sur la page.
@@ -209,9 +210,8 @@ function addElements(data) {
         sunrise.textContent = getLocaleTime(data.sunrise);
 
         // Afficher les prévisions météo pour les prochaines heures dans l'élément ayant l'ID 'boxes__hour'.
-        const boxesHour = document.getElementById('boxes__hour');
         const NBitem = 36; // Maximum 36 éléments à afficher
-        boxesHour.innerHTML = '';
+        boxes3H.innerHTML = '';
         for (let i = 1; i <= NBitem && i < data.list.length; i++) {
             const [dataDate, dataHour] = data.list[i].dtTxt.split(' ');
 
@@ -225,7 +225,29 @@ function addElements(data) {
                       <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
                   </div>`;
 
-            boxesHour.insertAdjacentHTML('beforeend', item);
+            boxes3H.insertAdjacentHTML('beforeend', item);
+        }
+        // Afficher les prévisions météo pour les prochaines heures dans l'élément ayant l'ID 'boxes__hour'.
+        const NBitemDay = 36; // Maximum 36 éléments à afficher
+        boxesDay.innerHTML = '';
+        for (let i = 1; i <= NBitemDay && i < data.list.length; i++) {
+
+            const [dataDate, dataHour] = data.list[i].dtTxt.split(' ');
+            if (dataHour === '12:00:00') {
+                const item = `<div class="box">
+                <div class="day">${getDayLetter(data.list[i].dt)}</div>
+                <div class="date">${formatDate(dataDate)}</div>
+                <div class="hour">${formatHour(dataHour)}</div>
+                <div class="icon-container">
+                    <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset" width="64" height="64">
+                </div>
+                <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
+           
+
+            </div>`;
+
+                boxesDay.insertAdjacentHTML('beforeend', item);
+            }
         }
 
         // Supprime le loader
@@ -360,4 +382,48 @@ function setListCity() {
     cities.forEach(city => city.addEventListener('click', () => {
         getWeatherData(city.childNodes[0].textContent);
     }))
+}
+
+/**
+ * Élément de case à cocher pour la durée de 3 heures.
+ * @type {HTMLInputElement}
+ */
+const checkboxFor3h = document.getElementById('checkFor3H');
+
+/**
+ * Clé utilisée pour le stockage local.
+ * @type {string}
+ */
+const storageKey = 'checkFor3h';
+
+// Récupérez la valeur du stockage local et convertissez-la en booléen.
+const storedValue = JSON.parse(localStorage.getItem(storageKey));
+
+// Affichez la valeur stockée dans la console.
+console.log('Stored value:', storedValue);
+
+const DISPLAY_GRID = 'grid';
+const DISPLAY_NONE = 'none';
+
+// Si la valeur stockée est nulle, initialisez l'affichage en fonction de la valeur par défaut.
+if (storedValue === null) {
+    handleChecked();
+} else {
+    // Déterminez la valeur d'affichage en fonction de la valeur stockée.
+    const displayValue = storedValue ? DISPLAY_GRID : DISPLAY_NONE;
+    boxes3H.style.display = displayValue;
+    checkboxFor3h.checked = storedValue;
+}
+
+checkboxFor3h.addEventListener('change', handleChecked);
+/**
+ * Gère l'événement de changement de la case à cocher.
+ */
+function handleChecked() {
+    const isChecked = checkboxFor3h.checked;
+
+    localStorage.setItem(storageKey, isChecked);
+
+    const displayValue = isChecked ? DISPLAY_GRID : DISPLAY_NONE;
+    boxes3H.style.display = displayValue;
 }

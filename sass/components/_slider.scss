@@ -5,7 +5,7 @@
     left: 0;
     width: 80%;
     max-width: 32rem;
-    height: 100%;
+    min-height: 100vh;
     background-color: $white-color;
     box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.4);
     border-radius: 0 0 $radius 0;
@@ -20,7 +20,7 @@
   position: relative;
   @include background-special;
   width: 100%;
-  padding: 5rem 2rem;
+  padding: 4rem 2rem;
   border-radius: 0 0 0 $radius;
 
   &::after,&::before{
@@ -51,9 +51,9 @@
 }
 
 .slider__bot {
-  padding: 3rem 2rem;
+  padding: 2rem 2rem;
   color: #444;
-  .city-max {
+  .underline {
     border-bottom: 3px solid $secondary-color;
     width: fit-content;
   }
@@ -73,6 +73,17 @@
           font-size: 1.8rem;
       }
   }
+
+  .checkFor3H {
+    display: flex;
+    label , input {
+      cursor: pointer;
+    }
+    label {
+      padding-right: 1rem;
+    }
+  }
+
   .copyright {
       position: absolute;
       margin-top:auto ;

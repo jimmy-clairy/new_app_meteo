@@ -70,12 +70,17 @@
                 <p class="error-info">Ville non trouvée</p>
             </form>
         </div>
+
         <div class="slider__bot">
             <div>
-                <p class="city-max">Maximum 5 Villes</p>
+                <p class="underline">Maximum 5 Villes</p>
                 <div id="cities__container"></div>
             </div>
-
+            <p class="underline">Options</p>
+            <div class="checkFor3H">
+                <label for="checkFor3H">Méteo 3h</label>
+                <input type="checkbox" name="checkFor3H" id="checkFor3H" checked>
+            </div>
             <p class="copyright">
                 <a href="https://jimmypro.fr/" target="_blank" rel="noopener noreferrer">Create by Clairy Jimmy</a>
             </p>
@@ -119,7 +124,7 @@
             </div>
         </div>
 
-        <div id="boxes__hour">
+        <div id="boxes__day">
             <!-- <div class="box">
                 <div class="day">${day}</div>
                 <div class="date">${formatDate(dataDate)}</div>
@@ -130,6 +135,18 @@
                 <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
             </div> -->
         </div>
+        <div id="boxes__3H">
+            <!-- <div class="box">
+                <div class="day">${day}</div>
+                <div class="date">${formatDate(dataDate)}</div>
+                <div class="hour">${formatHour(dataHour)}</div>
+                <div class="icon-container">
+                    <img class="icon-hour" src="./assets/iconMeteo/${data.list[i].icon}.svg" alt="icon sunset">
+                </div>
+                <div class="temp-hour">${data.list[i].temp.toFixed(0)}°</div>
+            </div> -->
+        </div>
+
     </main>
 
 </body>
