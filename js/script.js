@@ -20,10 +20,14 @@ function updateListCities(arrayCities) {
     // let item
     let i = 0;
     for (const city of arrayCities) {
-        let item = `<p>${city.name}
+        let item = `<div class='city'>
+                        <span class="name">${city.name}</span>
                         <span class="temp">${city.temp}°</span>
-                        <img src="assets/iconMeteo/${city.icon}.svg" alt="icon meteo" width="64" height="64">${i === 0 ? "⭐" : ""}
-                    </p>`
+                        <span class='container-img'>
+                        <img src="assets/iconMeteo/${city.icon}.svg" alt="icon meteo" width="64" height="64">
+                        </span>
+                        ${i === 0 ? "⭐" : ""}
+                    </div>`
         i++
         citiesContainer.innerHTML += item
     }
@@ -106,7 +110,7 @@ async function getWeatherData(city) {
         const weather5day = await getFetchData(`${FORECAST_API_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=fr`);
         console.log(dataWeather);
         // Créer un objet contenant les données météorologiques actuelles.
-        const currentWeather = createCurrentWeatherObject(cityName, dataWeather, weather5day);
+        const currentWeather = createWeatherObject(cityName, dataWeather, weather5day);
         console.log('Appel API');
         // Afficher les données météorologiques sur la page.
         addElements(currentWeather);
@@ -134,7 +138,7 @@ async function getWeatherData(city) {
  * @param {object} weather5day - Les prévisions météorologiques sur 5 jours.
  * @returns {object} L'objet contenant les données météorologiques actuelles.
  */
-function createCurrentWeatherObject(cityName, dataWeather, weather5day) {
+function createWeatherObject(cityName, dataWeather, weather5day) {
     const currentWeather = {
         cityName: cityName,
         temp: dataWeather.main.temp.toFixed(0),
@@ -166,8 +170,6 @@ function createCurrentWeatherObject(cityName, dataWeather, weather5day) {
     return currentWeather;
 }
 
-const boxes3H = document.getElementById('boxes__3H');
-const boxesDay = document.getElementById('boxes__day');
 /**
  * Ajoute les éléments HTML avec les données météorologiques à la page.
  * @param {Object} data - Les données météorologiques à afficher sur la page.
@@ -230,7 +232,7 @@ function addElements(data) {
  * @param {Array} data - Les données de prévisions météo pour les prochaines heures.
  */
 function showBoxesFor3H(data) {
-    const maxItem = 17; // Maximum 36 éléments à afficher
+    const maxItem = 18; // Maximum 36 éléments à afficher
 
     // Récupération de l'élément conteneur des boîtes de prévisions par heures
     const boxes3H = document.getElementById('boxes__3H');
@@ -244,7 +246,7 @@ function showBoxesFor3H(data) {
     boxes3H.innerHTML = '';
 
     // Boucle pour afficher les boîtes de prévisions pour les prochaines heures
-    for (let i = 0; i < data.length && i <= maxItem; i++) {
+    for (let i = 1; i < data.length && i <= maxItem; i++) {
         const [dataDate, dataHour] = data[i].dtTxt.split(' ');
 
         const item = `<div class="box">
@@ -252,7 +254,7 @@ function showBoxesFor3H(data) {
                     <div class="date">${formatDate(dataDate)}</div>
                     <div class="hour">${formatHour(dataHour)}</div>
                     <div class="icon-container">
-                        <img class="icon-hour" src="./assets/iconMeteo/${data[i].icon}.svg" alt="icon météo" width="64" height="64">
+                        <img class="icon-hour" src="./assets/iconMeteo/${data[i].icon}.svg" alt="icon météo" width="70" height="70">
                     </div>
                     <div class="temp-hour">${data[i].temp.toFixed(0)}°</div>
                 </div>`;
@@ -268,23 +270,36 @@ function showBoxesFor3H(data) {
  * @param {Array} tempMinMax - Les valeurs minimales et maximales de température pour chaque jour.
  */
 function showBoxesForDay(data, tempMinMax) {
-    let startMinMax = 0;
-
-    // Afficher les prévisions météo pour les prochains jours dans l'élément ayant l'ID 'boxes__day'.
     const NBitemDay = 36; // Maximum 36 éléments à afficher
+
+    // Récupération de l'élément conteneur des boîtes de prévisions par jour
+    const boxesDay = document.getElementById('boxes__day');
+
+    if (!boxesDay) {
+        console.error("Element with ID 'boxes__day' not found.");
+        return;
+    }
+
+    // Supprime du tableau, le tableau vide et le jour actuel
+    tempMinMax.splice(0, 2);
+
+    // Nettoyage du contenu précédent
     boxesDay.innerHTML = '';
 
-    for (let i = 1; i <= NBitemDay && i < data.length; i++) {
+    const [currentDate] = data[1].dtTxt.split(' ');
+
+    // Boucle pour afficher les boîtes de prévisions pour les prochains jours
+    for (let i = 1, startMinMax = 0; i <= NBitemDay && i < data.length; i++) {
         const [dataDate, dataHour] = data[i].dtTxt.split(' ');
 
         // Vérifier si l'heure est 12:00:00 pour afficher la prévision du midi
-        if (dataHour === '12:00:00') {
+        if (dataHour === '12:00:00' && dataDate !== currentDate) {
             const item = `<div class="box">
                             <div class="day">${getDayLetter(data[i].dt)}</div>
                             <div class="date">${formatDate(dataDate)}</div>
                             
                             <div class="icon-container">
-                                <img class="icon-hour" src="./assets/iconMeteo/${data[i].icon}.svg" alt="icon météo" width="64" height="64">
+                                <img class="icon-hour" src="./assets/iconMeteo/${data[i].icon}.svg" alt="icon météo" width="70" height="70">
                             </div>
                             <div class="temp-min-max">${tempMinMax[startMinMax].min}° / ${tempMinMax[startMinMax].max}°</div>
                         </div>`;
@@ -294,7 +309,6 @@ function showBoxesForDay(data, tempMinMax) {
         }
     }
 }
-
 
 /**
  * Calcule les valeurs minimales et maximales de température pour chaque jour à partir des données fournies.
@@ -321,8 +335,6 @@ function getMinMax(data) {
         newDataDate = dataDate;
     }
 
-    arrayForDay.splice(0, 2);
-
     let arrayMinMax = [];
 
     // Calcul des valeurs minimales et maximales pour chaque jour
@@ -342,7 +354,6 @@ function getMinMax(data) {
 
     return arrayMinMax;
 }
-
 
 /**
  * Obtient le nom du jour de la semaine à partir d'un horodatage Unix.
@@ -447,16 +458,16 @@ function toggleNav() {
     slider.classList.toggle("active")
 }
 
-// Form ---------------------------------------------------
-const form = document.getElementById('form')
-form.setCity.addEventListener('input', () => {
+// Formulaire ---------------------------------------------------
+const formulaire = document.getElementById('form')
+formulaire.setCity.addEventListener('input', () => {
     errorInfo.style.display = 'none'
 })
-form.addEventListener('submit', (e) => {
+formulaire.addEventListener('submit', (e) => {
     e.preventDefault()
-    const city = form.setCity.value.trim() || 'paris';
+    const city = formulaire.setCity.value.trim() || 'paris';
     getWeatherData(city);
-    form.reset()
+    formulaire.reset()
 })
 
 getWeatherData(arrayCities[0].name)
@@ -470,6 +481,7 @@ function setListCity() {
 }
 
 // Checked 3H ----------------------------------------
+const boxes3H = document.getElementById('boxes__3H');
 const checkboxFor3H = document.getElementById('checkFor3H');
 const storageKeyFor3H = 'checkFor3H';
 
@@ -499,8 +511,8 @@ function handleCheckedFor3H() {
     boxes3H.parentElement.style.display = displayValue;
 }
 
-
 // Checked Day----------------------------------------
+const boxesDay = document.getElementById('boxes__day');
 const checkboxForDay = document.getElementById('checkForDay');
 const storageKey = 'checkForDay';
 
