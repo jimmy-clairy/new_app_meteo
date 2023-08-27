@@ -474,9 +474,9 @@ getWeatherData(arrayCities[0].name)
 updateListCities(arrayCities)
 
 function setListCity() {
-    const cities = document.querySelectorAll('#cities__container p')
+    const cities = document.querySelectorAll('#cities__container div')
     cities.forEach(city => city.addEventListener('click', () => {
-        getWeatherData(city.childNodes[0].textContent);
+        getWeatherData(city.firstElementChild.textContent);
     }))
 }
 
