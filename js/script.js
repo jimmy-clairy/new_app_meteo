@@ -1,7 +1,7 @@
 // Clé API pour accéder aux données météorologiques
 import { API_KEY } from "./config.js";
 
-const arrayCities = localStorage.getItem('arrayCities') ? JSON.parse(localStorage.getItem('arrayCities')) : [{ name: 'Paris' }]
+const arrayCities = localStorage.getItem('arrayCities') ? JSON.parse(localStorage.getItem('arrayCities')) : [{ name: 'Paris', temp: '10', icon: '04d' }]
 
 // Élément HTML pour afficher les erreurs
 const errorInfo = document.querySelector('.error-info');
