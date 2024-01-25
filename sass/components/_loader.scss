@@ -10,6 +10,8 @@
     font-size: 5.5rem;
     transition: opacity 1s;
 }
+
 .loader.active {
     opacity: 0;
+    z-index: -20;
 }
