@@ -1,19 +1,20 @@
 .slider {
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    width: 80%;
-    max-width: 32rem;
-    min-height: 100lvh;
-    background-color: $white-color;
-    box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3);
-    border-radius: 0 0 $radius 0;
-    transform: translateX(-110%);
-    transition: transform 0.4s cubic-bezier(0.73, 0.11, 0.67, 0.84);
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 80%;
+  max-width: 32rem;
+  min-height: 100lvh;
+  background-color: $white-color;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 0 0 $radius 0;
+  transform: translateX(-110%);
+  transition: transform 0.4s cubic-bezier(0.73, 0.11, 0.67, 0.84);
 }
+
 .slider.active {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .slider__top {
@@ -23,7 +24,8 @@
   padding: 3rem 2rem;
   border-radius: 0 0 0 $radius;
 
-  &::after,&::before{
+  &::after,
+  &::before {
     content: '';
     position: absolute;
     bottom: -50px;
@@ -32,20 +34,26 @@
     width: 50px;
     background-color: $secondary-color;
   }
-  &::after{
+
+  &::after {
     background-color: $white-color;
-    border-radius:  0 $radius 0 0;
+    border-radius: 0 $radius 0 0;
   }
+
   .cityName {
     font-size: 2.6rem;
     padding-right: .5rem;
+    text-transform: capitalize;
   }
+
   .min-max {
     margin-top: 1.5rem;
   }
+
   .temp-max {
     margin-right: 1rem;
   }
+
   button {
     cursor: pointer;
   }
@@ -54,89 +62,104 @@
 .slider__bot {
   padding: 1rem 2rem;
   color: #444;
+
   .underline {
     border-bottom: 3px solid $secondary-color;
     width: fit-content;
   }
+
   #cities__container {
-      .city{
-          font-weight: 600;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          min-height: 3rem;
-          margin: 1rem 0;
-          width: fit-content;
+    .city {
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      min-height: 3rem;
+      margin: 1rem 0;
+      width: fit-content;
+    }
+
+    .temp {
+      margin: 0 2rem 0 1.5rem;
+      font-weight: 900;
+      font-size: 1.8rem;
+    }
+
+    .container-img {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      margin-right: 1rem;
+
+      img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
-      .temp {
-          margin: 0 2rem 0 1.5rem;
-          font-weight: 900;
-          font-size: 1.8rem;
-      }
-      .container-img {
-        position: relative;
-        width: 20px;
-        height: 20px;
-        margin-right: 1rem;
-        img {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%,-50%);
-        }
-      }
+    }
   }
 
-  .checkFor3H, .checkForDay {
+  .checkFor3H,
+  .checkForDay {
     display: flex;
     margin: 1rem 0;
-    label , input {
+
+    label,
+    input {
       cursor: pointer;
     }
+
     label {
       padding-right: 1rem;
     }
   }
 
   .copyright {
-      position: absolute;
-      bottom: 0;
-      color: $main-color;
+    position: absolute;
+    bottom: 0;
+    color: $main-color;
   }
 }
 
 .slider-btn {
-    position: relative;
-    z-index: 10;
-    height: 3rem;
-    width: 3rem;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: transparent;
-  }
-  .slider-btn .line {
-    position: absolute;
-    display: block;
-    width: 100%;
-    height: 0.2rem;
-    background: $white-color;
-    transition: transform 0.3s ease-out, opacity 0.1s ease-out;
-  }
-  .slider-btn .l1 {
-    transform: translateY(-0.8rem);
-  }
-  .slider-btn .l3 {
-    transform: translateY(0.8rem);
-  }
-  .slider-btn.active .l1 {
-    transform: translateY(0) rotate(135deg);
-  }
-  .slider-btn.active .l2 {
-    opacity: 0;
-  }
-  .slider-btn.active .l3 {
-    transform: translateY(0) rotate(-135deg);
-  }
+  position: relative;
+  z-index: 10;
+  height: 3rem;
+  width: 3rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+}
+
+.slider-btn .line {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 0.2rem;
+  background: $white-color;
+  transition: transform 0.3s ease-out, opacity 0.1s ease-out;
+}
+
+.slider-btn .l1 {
+  transform: translateY(-0.8rem);
+}
+
+.slider-btn .l3 {
+  transform: translateY(0.8rem);
+}
+
+.slider-btn.active .l1 {
+  transform: translateY(0) rotate(135deg);
+}
+
+.slider-btn.active .l2 {
+  opacity: 0;
+}
+
+.slider-btn.active .l3 {
+  transform: translateY(0) rotate(-135deg);
+}

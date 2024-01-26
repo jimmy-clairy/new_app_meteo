@@ -10,7 +10,7 @@
  * console.log('Heure par défaut:', defaultFormat);
  * console.log('Heure personnalisée:', customFormat);
  */
-export default function formateTimestamp(timestamp, options = {}) {
+export function formatTimestamp(timestamp, options = {}) {
     const date = new Date(timestamp * 1000);
     return date.toLocaleTimeString('fr-FR', options);
 }

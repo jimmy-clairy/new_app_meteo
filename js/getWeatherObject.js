@@ -1,4 +1,4 @@
-import formatTimestamp from './formateTimestamp.js';
+import { formatTimestamp } from './functionsUtiles.js';
 
 /**
  * Asynchronously fetches data from a given URL.
@@ -7,6 +7,7 @@ import formatTimestamp from './formateTimestamp.js';
  * @throws {Error} - Throws an error if the server connection is not successful.
  */
 async function getDataCity(url) {
+    console.log('Appel API');
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -38,6 +39,7 @@ export async function createWeatherObject(city = 'paris') {
 
         // Checking if the city is found
         if (data.length === 0) {
+            document.querySelector('.error-info').style.display = 'block'
             throw new Error('City not found');
         }
 
@@ -45,12 +47,12 @@ export async function createWeatherObject(city = 'paris') {
 
         // Fetching current weather data
         const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather";
-        const WEATHER_URL = `${WEATHER_API_URL}?lat=${dataCity.lat}&lon=${dataCity.lon}&appid=${API_KEY}&units=metric&lang=en`;
+        const WEATHER_URL = `${WEATHER_API_URL}?lat=${dataCity.lat}&lon=${dataCity.lon}&appid=${API_KEY}&units=metric&lang=fr`;
         const dataCity1 = await getDataCity(WEATHER_URL);
 
         // Fetching weather forecast data
         const FORECAST_API_URL = "https://api.openweathermap.org/data/2.5/forecast";
-        const FORECAST_URL = `${FORECAST_API_URL}?lat=${dataCity.lat}&lon=${dataCity.lon}&appid=${API_KEY}&units=metric&lang=en`;
+        const FORECAST_URL = `${FORECAST_API_URL}?lat=${dataCity.lat}&lon=${dataCity.lon}&appid=${API_KEY}&units=metric&lang=fr`;
         const dataCity2 = await getDataCity(FORECAST_URL);
 
         // Building an object containing all weather information
@@ -61,7 +63,7 @@ export async function createWeatherObject(city = 'paris') {
             tempMax: dataCity1.main.temp_max.toFixed(0),
             feel: dataCity1.main.feels_like.toFixed(0),
             humidity: dataCity1.main.humidity,
-            wind: (dataCity1.wind.speed * 3).toFixed(0),
+            wind: (dataCity1.wind.speed * 3.6).toFixed(0),
             sunrise: formatTimestamp(dataCity1.sys.sunrise, { hour: 'numeric', minute: 'numeric' }).replace(':', 'h'),
             sunset: formatTimestamp(dataCity1.sys.sunset, { hour: 'numeric', minute: 'numeric' }).replace(':', 'h'),
             weather: dataCity1.weather[0],
