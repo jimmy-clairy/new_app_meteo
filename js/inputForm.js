@@ -1,4 +1,6 @@
+import { addCity } from "./functionsLocal.js"
 import { fetchWeatherData } from "./script1.js"
+import { sliderBottom } from "./sliderBottom.js"
 
 export function inputForm() {
     const slider = document.querySelector('.slider')
@@ -9,11 +11,11 @@ export function inputForm() {
         document.querySelector('.error-info').style.display = 'none'
     })
 
-    btnOK.addEventListener('click', (e) => {
+    btnOK.addEventListener('click', async (e) => {
         e.preventDefault()
-        fetchWeatherData(input.value)
-        setLocalStorage(input.value)
+        const { name, temp, weather } = await fetchWeatherData(input.value)
+
+        addCity({ name, temp, weather })
+        sliderBottom()
     })
 }
-
-

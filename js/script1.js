@@ -1,7 +1,9 @@
+import { getCities } from "./functionsLocal.js";
 import { createWeatherObject } from "./getWeatherObject.js";
 import { inputForm } from "./inputForm.js";
 import { showBoxesDay } from "./showBoxesDay.js";
 import { showBoxesHour } from "./showBoxesHour.js";
+import { sliderBottom } from "./sliderBottom.js";
 
 /**
  * Asynchronously fetches weather data for a specified city and logs the result.
@@ -9,6 +11,9 @@ import { showBoxesHour } from "./showBoxesHour.js";
  * @returns {Promise<void>} - A promise that resolves once the weather data is fetched and processed.
  */
 export async function fetchWeatherData(cityName) {
+    if (!cityName) {
+        cityName = getCities()[0].name
+    }
     try {
         const weatherData = await createWeatherObject(cityName);
         console.log(weatherData);
@@ -20,7 +25,10 @@ export async function fetchWeatherData(cityName) {
             showDataCityCards(weatherData);
             showBoxesDay(weatherData);
             showBoxesHour(weatherData);
-            sliderTopInfo(weatherData)
+            sliderTopInfo(weatherData);
+            sliderBottom()
+
+            return weatherData
 
         }
     } catch (error) {
@@ -75,37 +83,15 @@ function showDataCityCards(weatherData) {
 }
 
 function sliderTopInfo(weatherData) {
-    const { name, tempMin, tempMax } = weatherData
+    const { name, tempMin, tempMax, feel } = weatherData
 
     const sliderTop = document.querySelector('.slider__top')
     sliderTop.querySelector('.cityName').textContent = name
     sliderTop.querySelector('.temp-min').textContent = tempMin
     sliderTop.querySelector('.temp-max').textContent = tempMax
+    sliderTop.querySelector('.feel').textContent = feel
 }
 
-// fetchWeatherData('narbonne')
+fetchWeatherData()
 slider()
 inputForm()
-
-function getCities() {
-    const getCities = localStorage.getItem('Cities')
-
-    if (getCities === null) {
-        return []
-    }
-
-    return JSON.parse(getCities)
-}
-
-function addCity(cityName) {
-    const cities = getCities()
-
-    cities.unshift(cityName)
-    if (cities.length > 5) {
-        cities.pop()
-    }
-    console.log(cities);
-    localStorage.setItem('Cities', JSON.stringify(cities))
-}
-
-addCity('Paris')

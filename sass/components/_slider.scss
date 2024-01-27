@@ -69,14 +69,16 @@
   }
 
   #cities__container {
+
+    .container {
+      display: flex;
+    }
+
     .city {
       font-weight: 600;
       cursor: pointer;
-      display: flex;
-      align-items: center;
       min-height: 3rem;
-      margin: 1rem 0;
-      width: fit-content;
+      flex: 1;
     }
 
     .temp {
