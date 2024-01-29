@@ -12,8 +12,11 @@ import { inputForm, sliderTopInfo } from "./sliderTop.js";
  */
 export async function fetchWeatherData(cityName) {
 
-    if (!cityName) {
-        cityName = getCities()[0].name
+    const cities = getCities()
+    if (!cityName && cities.length === 0) {
+        cityName = 'paris'
+    } else if (!cityName && cities.length !== 0) {
+        cityName = cities[0].name
     }
 
     try {
