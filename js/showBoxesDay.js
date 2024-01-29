@@ -66,13 +66,11 @@ function createObjForBoxesDay(listDays) {
 export function showBoxesDay(weatherData) {
     const weatherDataLessCurrentDay = deleteCurrentDay(weatherData);
     const objForBoxesDay = createObjForBoxesDay(weatherDataLessCurrentDay);
-    // console.log("Boxes Day");
-    // console.log(objForBoxesDay);
 
-    let allItem = '';
+    let allItemHTML = '';
 
     for (const list of objForBoxesDay) {
-        const item = `<div class="box">
+        const itemHTML = `<div class="box">
                             <div class="day">${list.day}</div>
                             <div class="date">${list.date}</div>
                             <div class="icon-container">
@@ -81,8 +79,8 @@ export function showBoxesDay(weatherData) {
                             <div class="temp-min-max">${list.tempMin}° / ${list.tempMax}°</div>
                         </div>`;
 
-        allItem += item;
+        allItemHTML += itemHTML;
     }
 
-    document.querySelector('#boxes__day').innerHTML = allItem;
+    document.querySelector('#boxes__day').innerHTML = allItemHTML;
 }

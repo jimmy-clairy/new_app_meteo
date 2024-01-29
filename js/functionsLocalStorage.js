@@ -8,12 +8,16 @@ export function getCities() {
     return JSON.parse(getCities)
 }
 
-export function addCity(cityName) {
+export function addCity(weatherData) {
+    const { name, temp, weather } = weatherData
+
     let cities = getCities()
-    cities = cities.filter(objet => objet.name !== cityName.name);
-    cities.unshift(cityName)
+    cities = cities.filter(objet => objet.name !== name);
+    cities.unshift({ name, temp, weather })
+
     if (cities.length > 5) {
         cities.pop()
     }
+
     localStorage.setItem('Cities', JSON.stringify(cities))
 }

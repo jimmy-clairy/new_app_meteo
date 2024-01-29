@@ -4,8 +4,6 @@ const MAX_HOURS = 18 //40 max
 
 export function showBoxesHour(weatherData) {
     const objForBoxesHour = createObjForBoxesHour(weatherData)
-    // console.log("Boxes Hour");
-    // console.log(objForBoxesHour);
 
     let allItem = '';
 

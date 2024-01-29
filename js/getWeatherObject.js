@@ -28,7 +28,7 @@ async function getDataCity(url) {
  * const weatherData = await createWeatherObject('paris');
  * console.log('Weather Information:', weatherData);
  */
-export async function createWeatherObject(city = 'paris') {
+export async function createWeatherObject(city) {
     try {
         const API_KEY = '6f43c7305020f81c3276859a5f0cd312';
 

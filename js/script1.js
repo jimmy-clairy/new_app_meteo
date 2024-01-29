@@ -1,9 +1,9 @@
-import { getCities } from "./functionsLocal.js";
+import { addCity, getCities } from "./functionsLocalStorage.js";
 import { createWeatherObject } from "./getWeatherObject.js";
-import { inputForm } from "./inputForm.js";
 import { showBoxesDay } from "./showBoxesDay.js";
 import { showBoxesHour } from "./showBoxesHour.js";
-import { sliderBottom } from "./sliderBottom.js";
+import { getChecked, showListCity } from "./sliderBottom.js";
+import { inputForm, sliderTopInfo } from "./sliderTop.js";
 
 /**
  * Asynchronously fetches weather data for a specified city and logs the result.
@@ -11,43 +11,29 @@ import { sliderBottom } from "./sliderBottom.js";
  * @returns {Promise<void>} - A promise that resolves once the weather data is fetched and processed.
  */
 export async function fetchWeatherData(cityName) {
+
     if (!cityName) {
         cityName = getCities()[0].name
     }
+
     try {
         const weatherData = await createWeatherObject(cityName);
-        console.log(weatherData);
 
         if (weatherData) {
             document.querySelector('.loader').classList.add('active');
 
+
+            addCity(weatherData);
             showDataCityHeader(weatherData);
             showDataCityCards(weatherData);
             showBoxesDay(weatherData);
             showBoxesHour(weatherData);
             sliderTopInfo(weatherData);
-            sliderBottom()
-
+            showListCity()
             return weatherData
-
         }
     } catch (error) {
         console.error(error.message);
-    }
-}
-
-/**
- * Initializes the slider functionality.
- */
-function slider() {
-    const sliderBtn = document.querySelector(".slider-btn");
-    const slider = document.querySelector(".slider");
-
-    sliderBtn.addEventListener("click", toggleNav);
-
-    function toggleNav() {
-        sliderBtn.classList.toggle("active");
-        slider.classList.toggle("active");
     }
 }
 
@@ -82,16 +68,23 @@ function showDataCityCards(weatherData) {
     boxes.querySelector('.sunset').textContent = sunset;
 }
 
-function sliderTopInfo(weatherData) {
-    const { name, tempMin, tempMax, feel } = weatherData
+/**
+ * Initializes the slider functionality.
+ */
+function slider() {
+    const sliderBtn = document.querySelector(".slider-btn");
+    const slider = document.querySelector(".slider");
 
-    const sliderTop = document.querySelector('.slider__top')
-    sliderTop.querySelector('.cityName').textContent = name
-    sliderTop.querySelector('.temp-min').textContent = tempMin
-    sliderTop.querySelector('.temp-max').textContent = tempMax
-    sliderTop.querySelector('.feel').textContent = feel
+    sliderBtn.addEventListener("click", toggleNav);
+
+    function toggleNav() {
+        sliderBtn.classList.toggle("active");
+        slider.classList.toggle("active");
+    }
 }
 
+// Initialization
 fetchWeatherData()
 slider()
 inputForm()
+getChecked()
