@@ -46,7 +46,11 @@ function initializeCheckbox(storageKey, checkboxElement) {
 }
 
 function getLocalStorageValue(key) {
-    return JSON.parse(localStorage.getItem(key)) || false;
+    const storedValue = JSON.parse(localStorage.getItem(key));
+    if (storedValue === null) {
+        return true
+    }
+    return storedValue || false;
 }
 
 function toggleBoxes(type, isChecked) {
