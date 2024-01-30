@@ -1,3 +1,4 @@
+import { API_KEY } from './config.js';
 import { formatTimestamp } from './functionsUtiles.js';
 
 /**
@@ -30,8 +31,6 @@ async function getDataCity(url) {
  */
 export async function createWeatherObject(city) {
     try {
-        const API_KEY = '6f43c7305020f81c3276859a5f0cd312';
-
         // Fetching city coordinates
         const GEO_API_URL = "https://api.openweathermap.org/geo/1.0/direct";
         const GEO_URL = `${GEO_API_URL}?q=${city}&limit=1&appid=${API_KEY}`;
